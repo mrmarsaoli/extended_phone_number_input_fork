@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:extended_phone_number_input/models/country.dart';
 import 'package:extended_phone_number_input/utils/number_converter.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttercontactpicker/fluttercontactpicker.dart';
+import 'package:flutter_native_contact_picker/flutter_native_contact_picker.dart';
 import 'package:phone_numbers_parser/phone_numbers_parser.dart' as parserNumber;
 
 import 'models/countries_list.dart';
@@ -183,12 +183,9 @@ class PhoneNumberInputController extends ChangeNotifier {
 
   Future<void> pickFromContacts() async {
     try {
-      if (!await FlutterContactPicker.hasPermission() && Platform.isAndroid) {
-        await FlutterContactPicker.requestPermission();
-      }
-      final PhoneContact contact =
-          await FlutterContactPicker.pickPhoneContact();
-      final String? number = contact.phoneNumber?.number;
+      FlutterContactPicker _contactPicker = FlutterContactPicker();
+      final Contact? contact = await _contactPicker.selectContact();
+      final String? number = contact?.phoneNumbers?.first;
       if (number != null) {
         phoneNumber = number.replaceAll(' ', '');
       }
